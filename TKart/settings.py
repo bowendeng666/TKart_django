@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Category',
-    'accounts'
+    'accounts',
+    'store',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,7 @@ STATIC_ROOT = BASE_DIR /'static'
 STATICFILES_DIRS = [
     'tkart/static',
 ]
+
+# media files config
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR /'media'
