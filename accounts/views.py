@@ -2,8 +2,8 @@ from django.contrib import messages
 from .forms import RegistrationForm
 from .models import Account
 from django.shortcuts import render, redirect
-from django.contrib import messages
-
+from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def register(request):
@@ -31,8 +31,23 @@ def register(request):
 
 
 def login(request):
+    if request.method == "POST":
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = auth.authenticate(email=email, password=password)
+        
+        if user:
+            auth.login(request, user)
+            # messages.succcess(request, 'Login success.')
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid email or password.')
+            return redirect('login')
     return render(request, 'accounts/login.html')
 
-
+@login_required(login_url = 'login')
 def logout(request):
-    return
+    auth.logout(request)
+    messages.success(request, 'Logout success.')
+    return redirect('login')
