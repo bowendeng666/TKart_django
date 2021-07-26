@@ -139,3 +139,11 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# SMTP config
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '1441721977'
+EMAIL_HOST_PASSWORD = 'xytewtosoqxtjdca'
+EMAIL_USE_TLS = True
+ 
