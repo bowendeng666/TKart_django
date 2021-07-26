@@ -1,3 +1,4 @@
+from store.models import Variation
 from django.contrib import messages
 from django.http import request
 from django.http.response import HttpResponse
@@ -12,7 +13,9 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
+import requests
 
 def register(request):
     if request.method == 'POST':
@@ -60,11 +63,58 @@ def login(request):
         password = request.POST['password']
 
         user = auth.authenticate(email=email, password=password)
-
+        #check if the user account have any item in cart
         if user:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_items = CartItem.objects.filter(cart=cart)
+                    
+                    product_variation = []
+                    #grabing the product variations by cart id
+                    for item in cart_items:
+                        variations = item.variations.all()
+                        product_variation.append(list(variations))
+                    
+                    #get cart items from the user to access his product variations
+                    cart_items = CartItem.objects.filter(user=user)
+                    existing_variation_list = []
+                    item_ids = []
+                    for item in cart_items:
+                        existing_variation = item.variations.all()
+                        existing_variation_list.append(list(existing_variation))
+                        item_ids.append(item.id)
+
+                    #find common variation
+                    for ele in product_variation:
+                        if ele in existing_variation_list:
+                            index = existing_variation_list.index(ele)
+                            item_id = item_ids[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_items = CartItem.objects.filter(cart=cart)
+                            for item in cart_items:
+                                item.user = user
+                                item.save()
+            except:
+                pass
             auth.login(request, user)
             messages.success(request, 'Login success.')
-            return redirect('dashboard')
+            # Get the departure url
+            url = request.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query # return the 'next' statement
+                if 'next' in query:
+                    url_strs = query.split('=')
+                    nextPage = url_strs[-1]
+                    return redirect(nextPage)
+                
+            except:
+                return redirect('dashboard')
         else:
             messages.error(request, 'Invalid email or password.')
             return redirect('login')

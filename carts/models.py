@@ -2,6 +2,7 @@ from django.db.models.deletion import CASCADE
 from django.db.models.fields import BooleanField
 from store.models import Product, Variation
 from django.db import models
+from accounts.models import Account
 
 # Create your models here.
 
@@ -13,9 +14,10 @@ class Cart(models.Model):
         return self.cart_id
 
 class CartItem(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation, blank=True)
-    cart = models.ForeignKey(Cart, on_delete=CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=CASCADE, null=True)
     quantity = models.IntegerField()
     is_active = BooleanField(default=True)
 
