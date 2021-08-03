@@ -108,9 +108,9 @@ def login(request):
             url = request.META.get('HTTP_REFERER')
             try:
                 query = requests.utils.urlparse(url).query # return the 'next' statement
-                if 'next' in query:
-                    url_strs = query.split('=')
-                    nextPage = url_strs[-1]
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
                     return redirect(nextPage)
                 
             except:
