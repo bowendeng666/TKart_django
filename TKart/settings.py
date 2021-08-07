@@ -27,6 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True,cast=bool) #bring it as boolean value
 
 ALLOWED_HOSTS = ['TKart-app-env.eba-4xuxwmsv.us-west-2.elasticbeanstalk.com']
+# ALLOWED_HOSTS = []
 
 
 # Application definition
