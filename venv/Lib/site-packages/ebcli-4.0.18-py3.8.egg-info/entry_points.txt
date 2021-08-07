@@ -1,0 +1,3 @@
+[console_scripts]
+ebcli = ebcli.entrypoint:main
+

@@ -1,0 +1,6 @@
+Jinja2>=2.8
+keyring<=9.0,>=8.0
+PyYAML>=3.11
+requests>=2.8.1
+keyrings.alt>=1.1
+enum34>=1.1.6
