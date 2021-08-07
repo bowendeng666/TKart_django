@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True,cast=bool) #bring it as boolean value
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['TKart-app.eba-jkgb2x8p.us-west-2.elasticbeanstalk.com']
 # ALLOWED_HOSTS = []
 
 
