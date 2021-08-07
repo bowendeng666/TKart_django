@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'carts',
     'orders',
     'admin_honeypot',
+    'storages',
+
 ]
 
 MIDDLEWARE = [
@@ -111,6 +113,8 @@ else:
     }
 
 
+
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -147,14 +151,35 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-#set up static folder path in project
-STATIC_ROOT = BASE_DIR /'static'
+# STATIC_URL = '/static/'
+# #set up static folder path in project
+# STATIC_ROOT = BASE_DIR /'static'
+# STATICFILES_DIRS = [
+#     'tkart/static',
+# ]
+
+# AWS S3 Static Files Configuration
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'public-read'
+AWS_LOCATION = 'static'
+
 STATICFILES_DIRS = [
     'tkart/static',
 ]
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
 
 # media files config
+DEFAULT_FILE_STORAGE = 'TKart.media_storage.MediaStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR /'media'
 
